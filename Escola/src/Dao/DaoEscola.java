@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import modelo.Escola;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author Administrador
@@ -47,8 +50,8 @@ public class DaoEscola {
             PreparedStatement ps = conexao.Conexao.getConexao().prepareStatement(sql);
             ps.setString(1, objeto.getNome()); 
             ps.setString(2, objeto.getEndereco());
-            ps.setInt(3, objeto.getSigla());
-            ps.setInt(4, objeto.get());
+            ps.setString(3, objeto.getSigla());
+            ps.setInt(4, objeto.getCodigo());
             ps.executeUpdate();
             return true;
         } catch (SQLException | ClassNotFoundException ex) {
@@ -56,4 +59,32 @@ public class DaoEscola {
             return false;
         }
     }
+    
+    public static List<Escola> consultar() {
+        List<Escola> resultados = new ArrayList<>();
+        //editar o SQL conforme a entidade
+        String sql = "SELECT codigo, nome, endereco, sigla FROM escola";
+        PreparedStatement ps;
+        try {
+            ps = conexao.Conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Escola objeto = new Escola();
+                //definir um set para cada atributo da entidade, cuidado com o tipo
+                objeto.setCodigo(rs.getInt("codigo"));
+                objeto.setNome(rs.getString("nome"));
+                objeto.setEndereco(rs.getString("endereco"));
+                objeto.setSigla(rs.getString("sigla"));
+                
+                resultados.add(objeto);//não mexa nesse, ele adiciona o objeto na lista
+            }
+            return resultados;
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+}
+
+
+
 }

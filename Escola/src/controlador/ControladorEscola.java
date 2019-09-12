@@ -8,6 +8,11 @@ import Dao.DaoEscola;
 import javax.swing.JOptionPane;
 import modelo.Escola;
 import tela.manutencao.ManutencaoEscola;
+import java.util.List;
+
+import java.util.Vector;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Administrador
@@ -33,9 +38,9 @@ public class ControladorEscola {
         //definir todos os atributos
         objeto.setCodigo(Integer.parseInt(man.jtfCodigo.getText()));
         objeto.setNome(man.jtfNome.getText());
-        objeto.setDescricao(man.jtfDescricao.getText());
-        
-        boolean resultado = DaoProduto.alterar(objeto);
+        objeto.setEndereco(man.jtfEndereco.getText());
+        objeto.setSigla(man.jtfSigla.getText());
+        boolean resultado = DaoEscola.alterar(objeto);
         if (resultado) {
             JOptionPane.showMessageDialog(null, "Alterado com sucesso!");
         } else {
@@ -43,4 +48,25 @@ public class ControladorEscola {
         }
     }
 
+    
+    public static void atualizarTabela(JTable tabela) {
+        DefaultTableModel modelo = new DefaultTableModel();
+        //definindo o cabeçalho da tabela
+        modelo.addColumn("Codigo");
+        modelo.addColumn("Nome");
+        modelo.addColumn("Endereço");
+        modelo.addColumn("Sigla");
+        List<Escola> resultados = DaoEscola.consultar();
+        for (Escola objeto : resultados) {
+            Vector linha = new Vector();
+            
+            //definindo o conteúdo da tabela
+            linha.add(objeto.getCodigo());
+            linha.add(objeto.getNome());
+            linha.add(objeto.getEndereco());
+            linha.add(objeto.getSigla());
+            modelo.addRow(linha); //adicionando a linha na tabela
+        }
+        tabela.setModel(modelo);
+    }
 }
